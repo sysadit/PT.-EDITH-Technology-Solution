@@ -22,5 +22,9 @@ jobs:
 
       - name: Run new container
         run: |
-          docker run -d --name edith-web-dev -p 8080:80 edith-web:dev
+          docker run -d \
+          --restart unless-stopped \
+          --name edith-web-dev \
+          -p 8081:80 \
+          edith-web:dev
 
