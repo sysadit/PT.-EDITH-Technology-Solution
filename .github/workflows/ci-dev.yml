@@ -1,11 +1,11 @@
-name: CI Dev - Build Only
+name: CI/CD Dev - Build & Deploy
 
 on:
   push:
     branches: [dev]
 
 jobs:
-  build:
+  deploy:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
@@ -14,3 +14,13 @@ jobs:
         run: |
           cd Dewi-1.0.0
           docker build -t edith-web:dev .
+
+      - name: Stop old container
+        run: |
+          docker stop edith-web-dev || true
+          docker rm edith-web-dev || true
+
+      - name: Run new container
+        run: |
+          docker run -d --name edith-web-dev -p 8080:80 edith-web:dev
+
