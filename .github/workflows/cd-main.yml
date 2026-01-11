@@ -1,0 +1,30 @@
+name: CD Production - Build & Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker Image (Prod)
+        run: |
+          cd Dewi-1.0.0
+          docker build -t edith-web:prod .
+
+      - name: Stop old prod container
+        run: |
+          docker stop edith-web-prod || true
+          docker rm edith-web-prod || true
+
+      - name: Run new prod container
+        run: |
+          docker run -d \
+          --restart unless-stopped \
+          --name edith-web-prod \
+          -p 8080:80 \
+          edith-web:prod
+
